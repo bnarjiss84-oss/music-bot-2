@@ -286,7 +286,7 @@ class Music(commands.Cog):
         vc = await self._ensure_voice(interaction)
         if not vc:
             return
-        await interaction.response.defer()
+        if not interaction.response.is_done(): await interaction.response.defer()
         state = get_state(interaction.guild.id)
         state.np_channel = interaction.channel
 
@@ -418,7 +418,7 @@ class Music(commands.Cog):
         if not state.current or not vc:
             return await interaction.response.send_message("❌ Nothing is playing.", ephemeral=True)
 
-        await interaction.response.defer()
+        if not interaction.response.is_done(): await interaction.response.defer()
         track = state.current
         ffmpeg_opts = get_ffmpeg_options(state.effect, seek=seconds)
         source = discord.FFmpegPCMAudio(track["url"], **ffmpeg_opts)
@@ -517,7 +517,7 @@ class Music(commands.Cog):
         vc = await self._ensure_voice(interaction)
         if not vc:
             return
-        await interaction.response.defer()
+        if not interaction.response.is_done(): await interaction.response.defer()
         state = get_state(interaction.guild.id)
         state.np_channel = interaction.channel
 
@@ -558,7 +558,7 @@ class Music(commands.Cog):
             await interaction.response.send_message(f"✅ Effect set to **{effect}**. Will apply on next song.")
             return
 
-        await interaction.response.defer()
+        if not interaction.response.is_done(): await interaction.response.defer()
         track = state.current
         elapsed = int(time.time() - state.start_time) if state.start_time else 0
         ffmpeg_opts = get_ffmpeg_options(effect, seek=elapsed)
@@ -581,7 +581,7 @@ class Music(commands.Cog):
     @app_commands.command(name="lyrics", description="Show lyrics for the current or a specific song.")
     @app_commands.describe(song="Song name (leave empty for current song)")
     async def lyrics(self, interaction: discord.Interaction, song: str = None):
-        await interaction.response.defer()
+        if not interaction.response.is_done(): await interaction.response.defer()
         state = get_state(interaction.guild.id)
 
         if not song:
