@@ -174,7 +174,7 @@ def get_ffmpeg_options(effect="none", seek=0):
     return {
         "before_options": base_before,
         "options": effects.get(effect, "-vn"),
-        "executable": "ffmpeg",
+        "executable": r"C:\ffmpeg\bin\ffmpeg.exe",
     }
 
 
@@ -190,7 +190,7 @@ class Music(commands.Cog):
         """Background task: edits the now playing message every 15 seconds."""
         state = get_state(guild_id)
         while True:
-            await asyncio.sleep(5)
+            await asyncio.sleep(15)
             if not state.current or not state.np_message:
                 break
             try:
@@ -286,7 +286,7 @@ class Music(commands.Cog):
         vc = await self._ensure_voice(interaction)
         if not vc:
             return
-        if not interaction.response.is_done(): await interaction.response.defer()
+        await interaction.response.defer()
         state = get_state(interaction.guild.id)
         state.np_channel = interaction.channel
 
@@ -418,7 +418,7 @@ class Music(commands.Cog):
         if not state.current or not vc:
             return await interaction.response.send_message("❌ Nothing is playing.", ephemeral=True)
 
-        if not interaction.response.is_done(): await interaction.response.defer()
+        await interaction.response.defer()
         track = state.current
         ffmpeg_opts = get_ffmpeg_options(state.effect, seek=seconds)
         source = discord.FFmpegPCMAudio(track["url"], **ffmpeg_opts)
@@ -517,7 +517,7 @@ class Music(commands.Cog):
         vc = await self._ensure_voice(interaction)
         if not vc:
             return
-        if not interaction.response.is_done(): await interaction.response.defer()
+        await interaction.response.defer()
         state = get_state(interaction.guild.id)
         state.np_channel = interaction.channel
 
@@ -558,7 +558,7 @@ class Music(commands.Cog):
             await interaction.response.send_message(f"✅ Effect set to **{effect}**. Will apply on next song.")
             return
 
-        if not interaction.response.is_done(): await interaction.response.defer()
+        await interaction.response.defer()
         track = state.current
         elapsed = int(time.time() - state.start_time) if state.start_time else 0
         ffmpeg_opts = get_ffmpeg_options(effect, seek=elapsed)
@@ -581,7 +581,7 @@ class Music(commands.Cog):
     @app_commands.command(name="lyrics", description="Show lyrics for the current or a specific song.")
     @app_commands.describe(song="Song name (leave empty for current song)")
     async def lyrics(self, interaction: discord.Interaction, song: str = None):
-        if not interaction.response.is_done(): await interaction.response.defer()
+        await interaction.response.defer()
         state = get_state(interaction.guild.id)
 
         if not song:
