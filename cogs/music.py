@@ -174,7 +174,7 @@ def get_ffmpeg_options(effect="none", seek=0):
     return {
         "before_options": base_before,
         "options": effects.get(effect, "-vn"),
-        "executable": r"C:\ffmpeg\bin\ffmpeg.exe",
+        "executable": "ffmpeg",
     }
 
 
