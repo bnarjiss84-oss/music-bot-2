@@ -1,9 +1,16 @@
 import discord
 from discord.ext import commands
 import os
+import subprocess
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Install ffmpeg if not available
+try:
+    subprocess.run(["ffmpeg", "-version"], capture_output=True, check=True)
+except Exception:
+    os.system("apt-get install -y ffmpeg")
 
 intents = discord.Intents.default()
 intents.message_content = True
